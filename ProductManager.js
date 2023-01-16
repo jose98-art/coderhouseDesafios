@@ -108,11 +108,12 @@ async function prueba() {
   // mostramos un producto que no existe por su id
   console.log(manager.getProductById(5));
   // actualizamos un producto
-  console.log('actu',manager.updateProduct(1, 'canc'))
+  console.log('actualizado',manager.updateProduct(1, 'canc'))
   //
   console.log(manager.deleteProduct(2));
+  
   //eliminamos el archivo .json
-  manager.deletFileProducts('si')
+  // manager.deletFileProducts('si')
 }
 
 prueba();
