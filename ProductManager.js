@@ -57,12 +57,49 @@ class ManagerUsuarios {
   }
     
   updateProduct(id, title){
-        const actualizar = this.path.find(prop => prop.id === id)
-        return actualizar.title = title
+    try {
+      const product = this.getProducts()
+      if(product){
+        const indice = product.findIndex((pro)=> pro.id === id)
+        if(indice >= 0){
+          product[indice] = {...product[indice], ...title}
+          fs.writeFileSync(this.path, JSON.stringify(product, null))
+          console.log('Se actualizo tu producto')
+        }else{
+          console.log("producto no existente")
+        }
+      }else{
+        console.log("archivo no existente")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+        // const actualizar = this.path.find(prop => prop.id === id)
+        // return actualizar.title = title
     }
 
-  deleteProduct(id) {
-    return this.path.filter((elemente) => elemente.id !== id);
+    async deleteProductById(id) {
+      try {
+          const products = await this.getProducts();
+          if (products) {
+              const index = products.findIndex((prod) => prod.id === id);
+              if (index >= 0) {
+                  products[index].available = false;
+                   fs.writeFileSync
+                      (this.path, JSON.stringify(products, null, "\t"));
+                  console.log('Producto eliminado');
+              }
+              else {
+                 console.log("El producto no existe");
+              }
+          }
+          else {
+             console.log("El archivo no existe");
+          }
+      }
+      catch (error) {
+          console.log(error);
+      }
   }
 
   #generarId() {
@@ -72,46 +109,24 @@ class ManagerUsuarios {
   }
 }
 const manager = new ManagerUsuarios();
-const usuario1 = {
-  title: "mochila",
-  description: "mochila negra",
-  price: 234,
-  thumbnail: 23,
-  code: 2390,
-  stock: 2,
+const usuario1Actualizado = {
+  title: "pantalon",
+  description: "pantalon negra",
+  price: 390,
+  thumbnail: 2,
+  code: 21098,
+  stock: 5,
 };
-const usuario2 = {
-  title: "tenis",
-  description: "tenis negra",
-  price: 345,
-  thumbnail: 23,
-  code: 2345,
-  stock: 23,
-};
-const usuario3 = {
-  title: "playera",
-  description: "playera negra",
-  price: 234,
-  thumbnail: 12,
-  code: 1938,
-  stock: 32,
-};
+
 async function prueba() {
   // mostramos el archivo
   console.log(await manager.getProducts());
-  // agregamos productos
-  await manager.addProduct(usuario1);
-  await manager.addProduct(usuario2);
-  await manager.addProduct(usuario3);
-  // mostramos un producto que si existe
   console.log("este producto si existe", manager.getProductById(1));
-  // mostramos un producto que no existe por su id
   console.log(manager.getProductById(5));
   // actualizamos un producto
-  console.log('actualizado',manager.updateProduct(1, 'canc'))
+  console.log('actualizado',manager.updateProduct(1, usuario1Actualizado))
   //
-  console.log(manager.deleteProduct(2));
-  
+  console.log(manager.deleteProductById(2));
   //eliminamos el archivo .json
   // manager.deletFileProducts('si')
 }
